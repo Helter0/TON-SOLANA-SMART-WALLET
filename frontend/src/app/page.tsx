@@ -2,12 +2,17 @@
 
 import { TonConnectButton, TonConnectUIProvider } from '@tonconnect/ui-react';
 import { useTonConnectUI } from '@tonconnect/ui-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function WalletConnection() {
   const [tonConnectUI] = useTonConnectUI();
   const [signature, setSignature] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleSignMessage = async () => {
     if (!tonConnectUI.connected) {
@@ -46,7 +51,7 @@ function WalletConnection() {
             <TonConnectButton />
           </div>
 
-          {tonConnectUI.connected && (
+          {isClient && tonConnectUI.connected && (
             <div className="space-y-4">
               <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
                 <p className="text-green-800 dark:text-green-200 text-sm">
@@ -75,7 +80,7 @@ function WalletConnection() {
             </div>
           )}
 
-          {!tonConnectUI.connected && (
+          {isClient && !tonConnectUI.connected && (
             <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
               <p className="text-yellow-800 dark:text-yellow-200 text-sm">
                 Please connect your TON wallet to continue
@@ -90,7 +95,7 @@ function WalletConnection() {
 
 export default function Home() {
   return (
-    <TonConnectUIProvider manifestUrl="https://ton-connect.github.io/demo-dapp-with-wallet/tonconnect-manifest.json">
+    <TonConnectUIProvider manifestUrl="/tonconnect-manifest.json">
       <WalletConnection />
     </TonConnectUIProvider>
   );

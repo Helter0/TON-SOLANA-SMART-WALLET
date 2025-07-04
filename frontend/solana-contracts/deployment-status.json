@@ -1,0 +1,9 @@
+{
+  "programId": "9vT68YRWSuNoz2ahBsoU8KGF34VSxY1DsP3dLzFJiWNv",
+  "network": "devnet",
+  "endpoint": "https://api.devnet.solana.com",
+  "wallet": "HJZQnWk2JL1qLU2L6AyPZaepqVRqhtadK66G7A7U2akq",
+  "balance": 2,
+  "timestamp": "2025-07-04T10:33:27.388Z",
+  "status": "ready-for-integration"
+}

@@ -10,7 +10,7 @@ function WalletConnection() {
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [walletInfo, setWalletInfo] = useState<any>(null);
+  const [walletInfo, setWalletInfo] = useState<{account?: {address: string}, device?: {appName: string}} | null>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -45,9 +45,9 @@ function WalletConnection() {
       });
       
       setSignature(result.signature);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Signing failed:', error);
-      setError(error.message || 'Failed to sign message');
+      setError(error instanceof Error ? error.message : 'Failed to sign message');
     } finally {
       setIsLoading(false);
     }

@@ -11,6 +11,7 @@ pub mod solana_contracts {
         let factory = &mut ctx.accounts.factory;
         factory.authority = ctx.accounts.authority.key();
         factory.wallet_count = 0;
+        msg!("Factory initialized with authority: {}", factory.authority);
         Ok(())
     }
 
@@ -37,6 +38,7 @@ pub mod solana_contracts {
             owner: ctx.accounts.owner.key(),
         });
 
+        msg!("Wallet created: {}", wallet.key());
         Ok(())
     }
 
@@ -49,30 +51,20 @@ pub mod solana_contracts {
     ) -> Result<()> {
         let wallet = &ctx.accounts.wallet;
 
-        // For POC: Basic verification (in production, implement full ED25519 verification)
+        // For POC: Basic verification
         require!(wallet.is_active, ErrorCode::WalletInactive);
         require!(message.len() > 0, ErrorCode::InvalidMessage);
         require!(signature.len() == 64, ErrorCode::InvalidSignature);
 
-        // TODO: Implement actual token transfer
         msg!("Executing transaction for wallet: {}", wallet.key());
         msg!("Amount: {}", amount);
+        msg!("Message length: {}", message.len());
 
         emit!(TransactionExecuted {
             wallet: wallet.key(),
             amount,
         });
 
-        Ok(())
-    }
-
-    /// Set wallet status
-    pub fn set_wallet_status(
-        ctx: Context<SetWalletStatus>,
-        is_active: bool,
-    ) -> Result<()> {
-        let wallet = &mut ctx.accounts.wallet;
-        wallet.is_active = is_active;
         Ok(())
     }
 }
@@ -83,7 +75,7 @@ pub struct InitializeFactory<'info> {
     #[account(
         init,
         payer = authority,
-        space = 8 + std::mem::size_of::<Factory>()
+        space = 8 + 32 + 8 // discriminator + pubkey + u64
     )]
     pub factory: Account<'info, Factory>,
     #[account(mut)]
@@ -99,7 +91,7 @@ pub struct CreateWallet<'info> {
     #[account(
         init,
         payer = owner,
-        space = 8 + std::mem::size_of::<SmartWallet>(),
+        space = 8 + 32 + 32 + 32 + 8 + 1, // discriminator + factory + ton_pubkey + owner + nonce + bool
         seeds = [b"wallet", ton_public_key.as_ref(), nonce.to_le_bytes().as_ref()],
         bump
     )]
@@ -111,12 +103,6 @@ pub struct CreateWallet<'info> {
 
 #[derive(Accounts)]
 pub struct ExecuteTransaction<'info> {
-    pub wallet: Account<'info, SmartWallet>,
-}
-
-#[derive(Accounts)]
-pub struct SetWalletStatus<'info> {
-    #[account(mut)]
     pub wallet: Account<'info, SmartWallet>,
 }
 

@@ -95,7 +95,7 @@ function WalletConnection() {
 
 export default function Home() {
   return (
-    <TonConnectUIProvider manifestUrl="/tonconnect-manifest.json">
+    <TonConnectUIProvider manifestUrl="https://ton-connect.github.io/demo-dapp-with-wallet/tonconnect-manifest.json">
       <WalletConnection />
     </TonConnectUIProvider>
   );

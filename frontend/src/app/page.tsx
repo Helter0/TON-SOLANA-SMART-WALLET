@@ -22,6 +22,11 @@ function WalletConnection() {
         console.log('Wallet status changed:', walletInfo);
         setWalletInfo(walletInfo);
         setError(null);
+        
+        // Log connection for debugging
+        if (walletInfo) {
+          console.log('Connected successfully!', walletInfo);
+        }
       });
 
       return () => {
@@ -60,6 +65,10 @@ function WalletConnection() {
     setWalletInfo(null);
   };
 
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-md w-full">
@@ -75,6 +84,18 @@ function WalletConnection() {
         <div className="space-y-6">
           <div className="flex justify-center">
             <TonConnectButton />
+          </div>
+
+          <div className="text-center">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+              Having issues? Try connecting directly:
+            </p>
+            <a
+              href="tonkeeper://send"
+              className="text-blue-600 hover:text-blue-700 text-sm underline"
+            >
+              Open Tonkeeper App
+            </a>
           </div>
 
           {isClient && (
@@ -150,6 +171,12 @@ function WalletConnection() {
               <p className="text-yellow-700 dark:text-yellow-300 text-xs mt-2">
                 💡 If connection freezes, try refreshing the page or using a different wallet
               </p>
+              <button
+                onClick={handleRefresh}
+                className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white text-sm py-2 px-3 rounded transition-colors"
+              >
+                🔄 Refresh Page
+              </button>
             </div>
           )}
         </div>
